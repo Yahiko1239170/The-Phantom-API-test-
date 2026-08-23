@@ -25,6 +25,8 @@ For a hosted deployment, do not commit an API key or put a private key in fronte
 
 ### Exports
 
+The chart editor also lets you rename, recolor, reorder, add, or remove bars, edit counts, and change the chart headings, y-axis label, and bar-height scale.
+
 - **SVG** is editable and remains sharp at any size.
 - **PNG** is rendered at 2400 × 1520 pixels.
 - **Print / PDF** opens the browser print dialog; choose “Save as PDF”.

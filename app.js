@@ -245,7 +245,8 @@ function buildChartSvg(results, settings) {
 
   const bars = results.map((result, index) => {
     const percent = result.total ? (result.hallucinations / result.total) * 100 : 0;
-    const barHeight = Math.max(percent ? (percent / 100) * plotHeight : 2, 2);
+    const barScale = Math.max(60, Math.min(Number(result.heightScale) || 100, 140));
+    const barHeight = Math.min(plotHeight, Math.max(percent ? (percent / 100) * plotHeight * (barScale / 100) : 2, 2));
     const x = plotLeft + step * index + (step - barWidth) / 2;
     const y = chartBottom - barHeight;
     const center = x + barWidth / 2;
@@ -311,6 +312,10 @@ function renderChartEditor() {
       <input class="field" type="number" min="1" max="999999" step="1" data-field="total" data-index="${index}" value="${result.total}" aria-label="Bar ${index + 1} total" />
       <input class="field" type="color" data-field="color" data-index="${index}" value="${getBarColor(index)}" aria-label="Bar ${index + 1} color" />
     </div>
+    <div class="bar-height-control">
+      <label for="bar-height-${index}">Visual height <output id="bar-height-value-${index}">${result.heightScale || 100}%</output></label>
+      <input id="bar-height-${index}" type="range" min="60" max="140" step="5" data-field="heightScale" data-index="${index}" value="${result.heightScale || 100}" aria-label="Bar ${index + 1} visual height" />
+    </div>
   </div>`).join("");
 }
 
@@ -356,6 +361,7 @@ function applyChartDataChange(event) {
     result.hallucinations = Math.min(result.hallucinations, result.total);
   }
   if (field === "color" && /^#[0-9a-f]{6}$/i.test(event.target.value)) state.chartColors[index] = event.target.value;
+  if (field === "heightScale") result.heightScale = Math.max(60, Math.min(Number(event.target.value) || 100, 140));
   render();
   showToast("Chart data updated.");
 }
@@ -709,6 +715,11 @@ dom.localEvaluate.addEventListener("click", () => {
 });
 $("#api-provider").addEventListener("change", applyProviderPreset);
 dom.apiEvaluate.addEventListener("click", evaluateWithApi);
+dom.chartEditor.addEventListener("input", (event) => {
+  if (event.target.dataset.field !== "heightScale") return;
+  const output = document.querySelector(`#bar-height-value-${event.target.dataset.index}`);
+  if (output) output.textContent = `${event.target.value}%`;
+});
 dom.chartEditor.addEventListener("change", applyChartDataChange);
 dom.chartEditor.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-action]");

@@ -87,6 +87,9 @@ h2 { margin: 5px 0 0; color: var(--ink); font-size: 21px; line-height: 1.18; let
 .field:focus { border-color: #9d91e7; box-shadow: 0 0 0 3px rgba(85,53,212,.1); }
 textarea.field { resize: vertical; min-height: 65px; }
 .field-mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; }
+.range-field { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; color: var(--ink-faint); font-size: 9px; }
+.range-field input { width: 100%; accent-color: var(--purple); cursor: pointer; }
+.range-field + .rule-divider { margin-top: 22px; }
 .evaluation-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 18px; }
 .api-details { margin-top: 19px; border: 1px solid var(--line); border-radius: 10px; background: #fbfcff; }
 .api-details summary { padding: 11px 12px; cursor: pointer; color: var(--ink-soft); font-size: 11px; font-weight: 700; list-style-position: inside; }
@@ -107,6 +110,10 @@ textarea.field { resize: vertical; min-height: 65px; }
 .bar-editor-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) .75fr .75fr 36px; gap: 6px; }
 .bar-editor-grid .field { min-width: 0; padding: 7px 7px; font-size: 10px; }
 .bar-editor-grid input[type="color"] { height: 32px; padding: 3px; cursor: pointer; }
+.bar-height-control { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 9px; margin-top: 8px; color: var(--ink-faint); font-size: 9px; }
+.bar-height-control label { white-space: nowrap; }
+.bar-height-control output { margin-left: 3px; color: var(--purple); font-weight: 700; }
+.bar-height-control input { width: 100%; accent-color: var(--purple); cursor: pointer; }
 .add-bar-button { width: 100%; margin-top: 10px; }
 .chart-editor-help { margin-bottom: 0; }
 
@@ -138,24 +145,35 @@ textarea.field { resize: vertical; min-height: 65px; }
   .export-actions { justify-content: flex-start; }
 }
 @media (max-width: 800px) {
-  .shell { width: min(100% - 32px, 650px); }
+  .shell { width: min(100% - 24px, 650px); }
   .site-header { height: 72px; }
   .intro { padding: 40px 0 34px; }
   h1 { font-size: clamp(42px, 12vw, 66px); }
   .workspace, .how-it-works { grid-template-columns: 1fr; }
   .how-it-works { gap: 32px; margin-top: 75px; }
   .pipeline { gap: 17px; }
-  .poster-frame { min-height: 400px; padding: 10px; }
+  .preview-topline h2 { font-size: 23px; }
+  .poster-frame { min-height: 0; align-items: flex-start; justify-content: flex-start; padding: 8px; }
+  .poster-frame svg { min-width: 0; width: 100%; }
   .preview-panel { padding: 14px; }
+  .export-actions { width: 100%; }
+  .export-actions .button { flex: 1 1 140px; }
 }
 @media (max-width: 520px) {
   .header-note { display: none; }
   .controls-panel { padding: 16px; }
+  .preview-topline { flex-direction: column; }
+  .result-state { align-self: flex-start; }
+  .poster-frame { margin-top: 18px; padding: 4px; }
   .pipeline { grid-template-columns: 1fr; }
   .pipeline article { display: grid; grid-template-columns: 36px 1fr; column-gap: 10px; }
   .pipeline article > span { grid-row: span 2; margin: 10px 0 0; }
   .pipeline article p { grid-column: 2; }
   .evaluation-buttons { grid-template-columns: 1fr; }
+  .export-actions { display: grid; grid-template-columns: 1fr; }
+  .export-actions .button { width: 100%; }
+  .bar-editor-grid { grid-template-columns: 1fr 1fr 36px; }
+  .bar-editor-grid input[data-field="model"] { grid-column: 1 / -1; }
 }
 
 @media print {
