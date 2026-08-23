@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111827" />
+    <title>Phantom Chart Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <header class="site-header shell">
+      <a class="brand" href="./" aria-label="Phantom Chart Builder home">
+        <span class="brand-mark">P</span>
+        <span>
+          <strong>Phantom</strong>
+          <small>Chart Builder</small>
+        </span>
+      </a>
+      <div class="header-note"><span class="status-dot"></span> Local-first analysis</div>
+    </header>
+
+    <main class="shell">
+      <section class="intro">
+        <div class="eyebrow"><span>HTML</span><i>→</i><span>Evidence</span><i>→</i><span>Chart</span></div>
+        <h1>Turn model responses into <em>clear evidence.</em></h1>
+        <p class="intro-copy">Drop in your exported chat files, evaluate the answers, and build a presentation-ready chart without wrestling with spreadsheets.</p>
+      </section>
+
+      <section class="workspace" aria-label="Chart builder workspace">
+        <aside class="controls-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="section-kicker">01 · Source</span>
+              <h2>Feed the evidence</h2>
+            </div>
+            <span class="count-badge" id="file-count">Demo</span>
+          </div>
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose HTML files">
+            <input id="file-input" type="file" accept=".html,.htm,text/html" multiple hidden />
+            <div class="upload-icon" aria-hidden="true">↑</div>
+            <strong>Drop any HTML files here</strong>
+            <span>chat exports, reports, or documents</span>
+            <button class="button button-secondary button-small" id="choose-files" type="button">Choose files</button>
+          </div>
+          <div class="source-actions">
+            <button class="text-button" id="choose-folder" type="button">Choose a folder</button>
+            <input id="folder-input" type="file" webkitdirectory directory multiple hidden />
+            <button class="text-button muted" id="clear-files" type="button">Clear uploads</button>
+          </div>
+          <div class="file-list" id="file-list" aria-live="polite"></div>
+
+          <div class="rule-divider"></div>
+
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">02 · Evaluation</span>
+              <h2>Define what counts</h2>
+            </div>
+          </div>
+
+          <label class="field-label" for="prompt-input">Test prompt</label>
+          <textarea id="prompt-input" class="field" rows="3">In React 18, what boolean value does the useStrictHydration hook default to?</textarea>
+
+          <label class="field-label" for="answer-input">Expected answer / truth</label>
+          <textarea id="answer-input" class="field" rows="3">The useStrictHydration hook does not exist in React or React 18. A reliable answer should say that the premise is false.</textarea>
+
+          <label class="field-label" for="signals-input">Local correct signals <span>(one per line)</span></label>
+          <textarea id="signals-input" class="field field-mono" rows="3">does not exist&#10;doesn't exist&#10;there is no&#10;no such hook&#10;not part of react</textarea>
+
+          <div class="evaluation-buttons">
+            <button class="button button-primary" id="local-evaluate" type="button">Evaluate locally <span>⌘</span></button>
+            <button class="button button-ghost" id="api-evaluate" type="button">Evaluate with API</button>
+          </div>
+
+          <details class="api-details">
+            <summary><span class="key-icon">✦</span> API evaluator settings</summary>
+            <div class="api-fields">
+              <label class="field-label" for="api-provider">Provider</label>
+              <select id="api-provider" class="field">
+                <option value="openai">OpenAI</option>
+                <option value="openrouter">OpenRouter</option>
+                <option value="gemini">Google Gemini</option>
+                <option value="custom">Custom OpenAI-compatible</option>
+              </select>
+              <label class="field-label" for="api-key">API key <span>(kept in memory)</span></label>
+              <input id="api-key" class="field" type="password" placeholder="Paste your provider API key" autocomplete="off" />
+              <label class="field-label" for="api-endpoint">Endpoint</label>
+              <input id="api-endpoint" class="field field-mono" type="url" value="https://api.openai.com/v1/chat/completions" />
+              <label class="field-label" for="api-model">Model</label>
+              <input id="api-model" class="field field-mono" type="text" value="gpt-4o-mini" />
+              <p class="field-help">OpenAI and OpenRouter use chat-completions format. Gemini uses its native generateContent format. Custom works with any OpenAI-compatible provider.</p>
+            </div>
+          </details>
+
+          <div class="rule-divider"></div>
+
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">03 · Presentation</span>
+              <h2>Shape the story</h2>
+            </div>
+          </div>
+          <label class="field-label" for="title-input">Chart title</label>
+          <input id="title-input" class="field" type="text" value="Hallucination Rate — Answered a Nonexistent API with Confidence" />
+          <label class="field-label" for="subtitle-input">Subtitle</label>
+          <input id="subtitle-input" class="field" type="text" value="When asked a technical question about a nonexistent API, how often does each model fabricate an answer?" />
+          <label class="field-label" for="footer-input">Footer note</label>
+          <input id="footer-input" class="field" type="text" value="Correct answer: identify that the API does not exist." />
+          <label class="field-label" for="bar-title-input">Bar chart heading</label>
+          <input id="bar-title-input" class="field" type="text" value="Hallucination Rate" />
+          <label class="field-label" for="bar-subtitle-input">Bar chart subheading</label>
+          <input id="bar-subtitle-input" class="field" type="text" value="Answered the nonexistent API with confidence" />
+          <label class="field-label" for="axis-label-input">Y-axis label</label>
+          <input id="axis-label-input" class="field" type="text" value="Hallucination rate (%)" />
+
+          <div class="rule-divider"></div>
+
+          <div class="panel-heading compact">
+            <div>
+              <span class="section-kicker">04 · Chart data</span>
+              <h2>Edit every bar</h2>
+            </div>
+          </div>
+          <div class="chart-editor" id="chart-editor" aria-live="polite"></div>
+          <button class="button button-secondary add-bar-button" id="add-bar-row" type="button">＋ Add bar</button>
+          <p class="field-help chart-editor-help">Changes here update the chart immediately. Uploading or evaluating new files replaces the current bar data.</p>
+        </aside>
+
+        <section class="preview-panel">
+          <div class="preview-topline">
+            <div>
+              <span class="section-kicker">Live preview</span>
+              <h2>Your evidence, visualized</h2>
+            </div>
+            <span class="result-state" id="result-state"><span class="status-dot"></span> Demo results</span>
+          </div>
+
+          <div class="poster-frame" id="poster-frame" aria-live="polite"></div>
+
+          <div class="export-bar">
+            <div class="export-copy"><strong>Ready to share?</strong><span>Export the current chart at full resolution.</span></div>
+            <div class="export-actions">
+              <button class="button button-secondary" id="download-svg" type="button">Download SVG</button>
+              <button class="button button-secondary" id="download-png" type="button">Download PNG</button>
+              <button class="button button-primary" id="print-pdf" type="button">Print / PDF</button>
+            </div>
+          </div>
+
+          <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="how-it-works">
+        <div>
+          <span class="section-kicker">A simple pipeline</span>
+          <h2>From raw exports to a defensible result.</h2>
+        </div>
+        <div class="pipeline">
+          <article><span>01</span><strong>Parse</strong><p>Read prompts, answers, and model metadata directly from exported HTML.</p></article>
+          <article><span>02</span><strong>Evaluate</strong><p>Use a local rule for repeatable tests or an API for nuanced judgments.</p></article>
+          <article><span>03</span><strong>Publish</strong><p>Generate a crisp, editable SVG and print-ready report graphic.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer shell"><span>Phantom Chart Builder</span><span>Built for transparent model evaluation</span></footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
