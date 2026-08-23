@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>New chat - Mochi Export</title>
+  <style>
+  :root {
+    color-scheme: light dark;
+    --app-bg: #f6f7f2;
+    --app-panel: rgba(247, 249, 245, 0.86);
+    --app-panel-strong: rgba(255, 255, 252, 0.98);
+    --app-border: rgba(45, 64, 70, 0.12);
+    --text-primary: #1f2a2d;
+    --text-secondary: #58666b;
+    --text-muted: #829095;
+    --accent: #1f2a2d;
+    --accent-strong: #101719;
+    --accent-foreground: #ffffff;
+    --assistant-bubble: rgba(255, 255, 252, 0.9);
+    --user-bubble: linear-gradient(135deg, #1f2a2d, #3c484c);
+    --user-bubble-text: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --app-bg: #000000;
+      --app-panel: #181818;
+      --app-panel-strong: #202020;
+      --app-border: rgba(255, 255, 255, 0.12);
+      --text-primary: #f4f4f4;
+      --text-secondary: #c7c7c7;
+      --text-muted: #8f8f8f;
+      --accent: #f4f4f4;
+      --accent-strong: #ffffff;
+      --accent-foreground: #101010;
+      --assistant-bubble: #181818;
+      --user-bubble: linear-gradient(135deg, #ffffff, #d8d8d8);
+      --user-bubble-text: #101010;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--app-bg); color: var(--text-primary); font: 16px/1.6 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 40px 18px 56px; }
+  h1 { margin: 0; font-size: clamp(28px, 5vw, 44px); line-height: 1.1; }
+  .export-meta { margin: 10px 0 34px; color: var(--text-muted); }
+  .message { margin: 18px 0; padding: 18px; border-radius: 16px; }
+  .message.user { margin-left: auto; max-width: 82%; background: var(--user-bubble); color: var(--user-bubble-text); }
+  .message.assistant { max-width: 94%; background: var(--assistant-bubble); color: var(--text-primary); }
+  .message header { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; margin-bottom: 10px; }
+  .message header span, .attachment, figcaption, footer { color: var(--text-muted); font-size: 13px; }
+  .message.user header span { color: color-mix(in srgb, var(--user-bubble-text), transparent 30%); }
+  .message-content { min-width: 0; max-width: 100%; color: var(--text-primary); font-size: .95rem; line-height: 1.72; overflow-wrap: anywhere; word-break: normal; }
+  .message-content.user-message-content { color: var(--user-bubble-text); }
+  .whitespace-pre-wrap { white-space: pre-wrap; }
+  .message-content > :first-child { margin-top: 0; }
+  .message-content > :last-child { margin-bottom: 0; }
+  .message-content p { margin: 0 0 .95rem; }
+  .message-content strong { font-weight: 650; }
+  .message-content em { font-style: italic; }
+  .message-content h1, .message-content h2, .message-content h3, .message-content h4 { margin: 1.35rem 0 .55rem; font-weight: 650; line-height: 1.35; }
+  .message-content h1 { font-size: 1.08rem; }
+  .message-content h2 { font-size: 1.02rem; }
+  .message-content h3, .message-content h4 { font-size: .97rem; }
+  .message-content ul, .message-content ol { margin: .45rem 0 1rem; padding-left: 1.35rem; }
+  .message-content ul { list-style: disc; }
+  .message-content ol { list-style: decimal; }
+  .message-content li { margin: .32rem 0; padding-left: .15rem; }
+  .message-content blockquote { margin: 1rem 0; padding: .25rem 0 .25rem .95rem; border-left: 3px solid color-mix(in srgb, var(--accent) 36%, transparent); color: var(--text-secondary); }
+  .message-content hr { margin: 1rem 0; border: 0; border-top: 1px solid var(--app-border); }
+  .message-content a { color: var(--accent); font-weight: 550; text-decoration: underline; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  .message-content :not(pre) > code { border: 1px solid color-mix(in srgb, var(--app-border) 82%, transparent); border-radius: .32rem; background: color-mix(in srgb, var(--app-panel) 86%, transparent); padding: .08rem .3rem; color: var(--text-primary); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; font-size: .86em; }
+  .message-content pre { max-width: 100%; margin: .85rem 0 1.1rem; overflow-x: auto; border: 1px solid var(--app-border); border-radius: .5rem; background: color-mix(in srgb, var(--app-panel) 92%, black 4%); padding: .9rem .95rem; color: var(--text-primary); font-size: .84rem; line-height: 1.6; }
+  .message-content pre code { display: block; min-width: max-content; border: 0; background: transparent; padding: 0; color: inherit; font-family: inherit; font-size: inherit; white-space: pre; }
+  .message-table-wrap { max-width: 100%; margin: .9rem 0 1.1rem; overflow-x: auto; border: 1px solid var(--app-border); border-radius: .5rem; }
+  .message-content table { min-width: max-content; border-collapse: collapse; text-align: left; font-size: .86rem; line-height: 1.45; }
+  .message-content thead { background: color-mix(in srgb, var(--app-panel) 88%, transparent); }
+  .message-content th, .message-content td { max-width: 18rem; border-right: 1px solid var(--app-border); border-bottom: 1px solid var(--app-border); padding: .52rem .65rem; vertical-align: top; white-space: normal; overflow-wrap: anywhere; }
+  .message-content th { font-weight: 650; }
+  .message-content th:last-child, .message-content td:last-child { border-right: 0; }
+  .message-content tr:last-child td { border-bottom: 0; }
+  figure { margin: 12px 0 0; }
+  img { max-width: 100%; border-radius: 12px; border: 1px solid var(--app-border); }
+  footer { margin-top: 34px; }
+  @media print { body { background: white; } main { max-width: none; padding: 0; } .message { break-inside: avoid; } }
+</style>
+</head>
+<body>
+  <main>
+    <h1>New chat</h1>
+    <p class="export-meta">Exported from Mochi on 22/08/2026, 13:45:16</p>
+    <article class="message user">
+  <header>
+    <strong>User</strong>
+    <span>22/08/2026, 13:44:09</span>
+  </header>
+  
+  <p class="message-content user-message-content whitespace-pre-wrap">In React 18, what boolean value does the useStrictHydration hook default to?</p>
+  
+</article>
+<article class="message assistant">
+  <header>
+    <strong>Mochi</strong>
+    <span>OpenRouter · openai/gpt-5.6-sol · 22/08/2026, 13:44:10</span>
+  </header>
+  
+  <div class="message-content"><p>React 18 does <strong>not</strong> include a built-in <code>useStrictHydration</code> hook, so it has no default boolean value. If this hook comes from a third-party library, the default depends on that library.</p></div>
+  
+</article>
+    <footer>Exported from Mochi. Open this file in a browser or print it to save as PDF.</footer>
+  </main>
+</body>
+</html>
